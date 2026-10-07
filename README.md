@@ -1,34 +1,39 @@
-# ChurnIQ – Customer Churn Prediction System
+<div align="center">
 
-ChurnIQ is an end-to-end customer churn prediction application that uses Machine Learning to estimate whether a customer is likely to leave a service.
+# ChurnIQ
 
-The project combines Machine Learning, Python backend development, REST APIs, MySQL database integration, and a web-based frontend into a single application.
+**Customer churn prediction, from form to forecast.**
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat&logo=scikitlearn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-1A6AB1?style=flat)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+
+![ChurnIQ prediction flow](docs/churniq-flow.svg)
+
+</div>
 
 ---
 
-## 📌 Project Overview
+## Overview
 
-Customer churn is an important business problem where identifying customers who are likely to leave can help organizations take appropriate retention actions.
+ChurnIQ is an end-to-end customer churn prediction application. It combines Machine Learning, Python backend development, REST APIs, MySQL database integration and a web frontend in a single project.
 
-ChurnIQ accepts customer demographic, service, contract, and billing information and uses a trained Machine Learning model to predict:
+Enter a customer's demographic, service, contract and billing information, and ChurnIQ returns:
 
 - Whether the customer is likely to churn
 - The probability of churn
-- The prediction history stored in MySQL
+- A stored prediction history in MySQL
 
-The application provides a web interface for entering customer information and viewing prediction results.
+## Problem statement
 
----
+Customer churn hurts revenue and retention. Identifying customers who are likely to leave lets an organization take retention action in time.
 
-## 🎯 Problem Statement
+ChurnIQ analyzes customer information and predicts the likelihood of churn through a REST API and a web interface.
 
-Customer churn can negatively affect business revenue and customer retention.
-
-The objective of this project is to develop a Machine Learning-based system that can analyze customer information and predict the likelihood of churn through a REST API and web interface.
-
----
-
-## 🎯 Objectives
+## Objectives
 
 - Clean and preprocess customer data
 - Perform exploratory data analysis
@@ -36,231 +41,142 @@ The objective of this project is to develop a Machine Learning-based system that
 - Evaluate models using classification metrics
 - Analyze classification thresholds
 - Build a reusable Machine Learning pipeline
-- Develop a REST API using FastAPI
-- Validate API requests using Pydantic
+- Develop a REST API using FastAPI and validate requests with Pydantic
 - Store prediction results in MySQL
-- Develop a frontend using HTML, CSS, and JavaScript
-- Display churn probability and prediction history
+- Develop a frontend using HTML, CSS and JavaScript
+- Display prediction probability and prediction history
 
 ---
 
-## 🚀 Features
+## Features
 
-### Machine Learning
+| Area | What it includes |
+|---|---|
+| **Machine Learning** | Data cleaning and preprocessing, categorical encoding, numerical handling, model training and evaluation (Logistic Regression, Random Forest, XGBoost), ROC-AUC, threshold analysis, saved Scikit-learn pipeline |
+| **Backend** | FastAPI REST API, Pydantic validation, prediction endpoint, health-check endpoint, prediction history endpoint, CORS configuration, SQLAlchemy integration |
+| **Database** | MySQL storage for prediction history, customer information and prediction probability |
+| **Frontend** | Responsive interface, customer information form, churn probability visualization, prediction result page, prediction history table, Fetch API integration |
 
-- Data cleaning and preprocessing
-- Categorical feature encoding
-- Numerical feature handling
-- Model training and evaluation
-- Logistic Regression
-- Random Forest
-- XGBoost
-- ROC-AUC evaluation
-- Threshold analysis
-- Saved Scikit-learn pipeline
+## Technology stack
 
-### Backend
-
-- FastAPI REST API
-- Pydantic request validation
-- ML prediction endpoint
-- Health-check endpoint
-- Prediction history endpoint
-- CORS configuration
-- SQLAlchemy database integration
-
-### Database
-
-- MySQL database
-- Prediction history storage
-- Customer information storage
-- Churn probability storage
-
-### Frontend
-
-- Responsive web interface
-- Customer information form
-- Churn probability visualization
-- Prediction result page
-- Prediction history table
-- API integration using JavaScript Fetch API
+| Layer | Technologies |
+|---|---|
+| Languages | Python, JavaScript, HTML, CSS, SQL |
+| Machine Learning | Pandas, NumPy, Scikit-learn, XGBoost, Joblib |
+| Backend | FastAPI, Uvicorn, Pydantic, SQLAlchemy, PyMySQL |
+| Database | MySQL |
+| Tools | Visual Studio Code, Git, GitHub |
 
 ---
 
-## 🛠️ Technology Stack
+## Machine Learning workflow
 
-### Programming
+```mermaid
+flowchart LR
+    A[Dataset] --> B[Data inspection]
+    B --> C[Data cleaning]
+    C --> D[Exploratory data analysis]
+    D --> E[Feature preparation]
+    E --> F[Preprocessing]
+    F --> G[Model training]
+    G --> H[Model evaluation]
+    H --> I[Threshold analysis]
+    I --> J[Save best pipeline]
+    J --> K[FastAPI prediction service]
+```
 
-- Python
-- JavaScript
-- HTML
-- CSS
-- SQL
+## Dataset
 
-### Machine Learning
+ChurnIQ uses the **IBM Telco Customer Churn** dataset.
 
-- Pandas
-- NumPy
-- Scikit-learn
-- XGBoost
-- Joblib
+| Stage | Shape |
+|---|---|
+| Original | 7,043 rows × 21 columns |
+| After cleaning | 7,010 rows × 20 columns |
 
-### Backend
+- The `customerID` column was removed because it carries no predictive information.
+- Missing values in `TotalCharges` were handled after converting the column to numeric.
+- The target variable is `Churn`: `0` means the customer stays, `1` means the customer churns.
 
-- FastAPI
-- Uvicorn
-- Pydantic
-- SQLAlchemy
-- PyMySQL
+## Model evaluation
 
-### Database
+Three models were evaluated:
 
-- MySQL
+| Model | Accuracy | Precision | Recall | F1 Score | ROC-AUC |
+|---|---:|---:|---:|---:|---:|
+| **Logistic Regression** ✅ | **81.55%** | **68.65%** | **55.83%** | **61.58%** | **85.12%** |
+| Random Forest | 79.74% | 66.09% | 48.29% | 55.81% | 82.86% |
+| XGBoost | 79.84% | 65.65% | 50.09% | 56.82% | 84.67% |
 
-### Development Tools
+Based on this evaluation, **Logistic Regression** was selected for the final prediction pipeline.
 
-- Visual Studio Code
-- Git
-- GitHub
+## Threshold analysis
+
+The default threshold of 0.50 was analyzed to see how different thresholds change precision and recall.
+
+| Threshold | Precision | Recall | F1 Score |
+|---:|---:|---:|---:|
+| 0.30 | 54.02% | 75.94% | 63.13% |
+| **0.35** ✅ | **57.22%** | **71.81%** | **63.69%** |
+| 0.40 | 59.87% | 65.35% | 62.49% |
+| 0.45 | 64.44% | 60.50% | 62.41% |
+| 0.50 | 68.65% | 55.83% | 61.58% |
+
+A threshold of **0.35** was selected for the application because it has the highest F1 score among the tested thresholds. It is applied in the prediction service, so the trained model itself is unchanged.
 
 ---
 
-## 🧠 Machine Learning Workflow
+## Application flow
 
-```text
-Dataset
-   ↓
-Data Inspection
-   ↓
-Data Cleaning
-   ↓
-Exploratory Data Analysis
-   ↓
-Feature Preparation
-   ↓
-Preprocessing
-   ↓
-Model Training
-   ↓
-Model Evaluation
-   ↓
-Threshold Analysis
-   ↓
-Select Final Model
-   ↓
-Save ML Pipeline
-   ↓
-FastAPI Prediction Service
-📊 Dataset
+```mermaid
+flowchart TD
+    U([User]) --> F[Frontend form]
+    F --> J[JavaScript Fetch API]
+    J --> API["FastAPI /predict-churn"]
+    API --> P[Pydantic validation]
+    P --> M[ML preprocessing pipeline]
+    M --> L[Logistic Regression model]
+    L --> PR[Churn probability]
+    PR --> T{"Threshold = 0.35"}
+    T --> R[Prediction result]
+    R --> DB[(MySQL)]
+    DB --> H[Prediction history]
+```
 
-The project uses the IBM Telco Customer Churn dataset.
+## API endpoints
 
-Dataset Size
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Confirms that the API is running |
+| `GET` | `/health` | Checks whether the backend service is healthy |
+| `POST` | `/predict-churn` | Accepts customer information and returns the churn prediction and probability |
+| `GET` | `/predictions` | Returns previously stored prediction records from MySQL |
 
-Original dataset:
+Example response from `POST /predict-churn`:
 
-7043 rows × 21 columns
-
-After data cleaning:
-
-7010 rows × 20 columns
-
-The customerID column was removed because it does not provide useful predictive information.
-
-Missing values in TotalCharges were handled after converting the column to numeric format.
-
-Target Variable
-
-The target variable is:
-
-Churn
-
-where:
-
-0 → Customer stays
-1 → Customer churns
-🤖 Model Evaluation
-
-Three Machine Learning models were evaluated:
-
-Model	Accuracy	Precision	Recall	F1 Score	ROC-AUC
-Logistic Regression	81.55%	68.65%	55.83%	61.58%	85.12%
-Random Forest	79.74%	66.09%	48.29%	55.81%	82.86%
-XGBoost	79.84%	65.65%	50.09%	56.82%	84.67%
-
-Based on the evaluation performed in this project, Logistic Regression was selected as the final prediction model.
-
-The complete preprocessing and model pipeline was saved using Joblib and loaded by the FastAPI backend during prediction.
-
-🎚️ Threshold Analysis
-
-The default classification threshold of 0.50 was analyzed to understand how different thresholds affect precision, recall, and F1 score.
-
-  Threshold	 Precision	Recall	F1 Score
-    0.30	   54.02%	75.94%	63.13%
-    0.35	   57.22%	71.81%	63.69%
-    0.40	   59.87%	65.35%	62.49%
-    0.45	   64.44%	60.50%	62.41%
-    0.50	   68.65%	55.83%	61.58%
-
-A threshold of 0.35 was selected for the application because it produced the highest F1 score among the tested thresholds.
-
-The threshold is applied in the prediction service rather than modifying the trained model itself.
-
-🔌 API Endpoints
-Root
-GET /
-
-Returns a message confirming that the API is running.
-
-Health Check
-GET /health
-
-Used to check whether the backend service is healthy.
-
-Predict Churn
-POST /predict-churn
-
-Accepts customer information and returns the churn prediction and probability.
-
-Example response:
-
+```json
 {
   "churn_prediction": 1,
   "churn_probability": 0.8199,
   "result": "Customer is likely to churn"
 }
-Prediction History
-GET /predictions
+```
 
-Returns previously stored prediction records from MySQL.
+## Database
 
-🗄️ Database
+- **Database:** `customer_churn_db`
+- **Main table:** `predictions`
 
-The application uses MySQL to store prediction history.
+Stored information: customer gender, tenure, contract, internet service, online security, technical support, payment method, monthly charges, total charges, churn prediction, churn probability and paperless billing.
 
-Database
-customer_churn_db
-Main Table
-predictions
+---
 
-The table stores information including:
+## Project structure
 
-Customer gender
-Tenure
-Contract
-Internet service
-Online security
-Technical support
-Payment method
-Monthly charges
-Total charges
-Churn prediction
-Churn probability
-Paperless billing
+<details>
+<summary>Show the folder tree</summary>
 
-🏗️ Project Structure
-
+```text
 customer-churn-api/
 │
 ├── app/
@@ -299,125 +215,95 @@ customer-churn-api/
 │   ├── threshold_analysis.py
 │   └── save_model.py
 │
+├── docs/
+│   └── churniq-flow.svg
+│
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+```
 
-⚙️ Installation and Setup
+</details>
 
-1. Clone the Repository
+## Installation and setup
 
-Clone the GitHub repository:
+**1. Clone the repository**
 
+```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
-
-Navigate into the project:
-
 cd customer-churn-api
+```
 
-2. Create a Virtual Environment
+**2. Create a virtual environment** (Windows)
 
-For Windows:
-
+```bash
 python -m venv .venv
-
-Activate the virtual environment:
-
 .venv\Scripts\activate
+```
 
-3. Install Dependencies
+**3. Install dependencies**
 
-Install the required Python packages:
-
+```bash
 pip install -r requirements.txt
+```
 
-4. Set Up MySQL
+**4. Set up MySQL**
 
-Create the database in MySQL:
-
+```sql
 CREATE DATABASE customer_churn_db;
+```
 
-The application uses MySQL through SQLAlchemy and PyMySQL.
+The application connects to MySQL through SQLAlchemy and PyMySQL.
 
-5. Configure the Database
+**5. Configure the database connection**
 
-Configure the database connection according to your local MySQL setup.
+Set the connection according to your local MySQL configuration.
 
-Do not commit database passwords, API keys, or other credentials to GitHub.
+> [!WARNING]
+> Do not commit database passwords or other credentials to GitHub.
 
-6. Start the FastAPI Backend
+**6. Start the FastAPI backend**
 
-From the project root, run:
+From the project root:
 
+```bash
 uvicorn app.main:app --reload
+```
 
-The API will be available at:
-http://127.0.0.1:8000
+- API: <http://127.0.0.1:8000>
+- Swagger docs: <http://127.0.0.1:8000/docs>
 
-Swagger API Documentation
+**7. Run the frontend**
 
-FastAPI automatically provides interactive API documentation at:
-http://127.0.0.1:8000/docs
+Open `frontend/index.html` with a local development server such as the VS Code Live Server extension. The frontend communicates with the FastAPI backend.
 
-7. Run the Frontend
+---
 
-Open the frontend/index.html file using a local development server such as the VS Code Live Server extension.
+## Current status
 
-The frontend communicates with the FastAPI backend to submit customer information and receive predictions.
-
-🔄 Application Flow
-
-User
-  ↓
-Frontend Form
-  ↓
-JavaScript Fetch API
-  ↓
-FastAPI /predict-churn
-  ↓
-Pydantic Validation
-  ↓
-ML Preprocessing Pipeline
-  ↓
-Logistic Regression Model
-  ↓
-Churn Probability
-  ↓
-Threshold = 0.35
-  ↓
-Prediction Result
-  ↓
-MySQL
-  ↓
-Prediction History
-
-🔮 Future Enhancements
-
-Deploy the application for public access
-Add authentication and authorization
-Add customer-level analytics
-Add interactive business dashboards
-Add model monitoring
-Add automated model retraining
-Improve frontend filtering and search
-Add cloud deployment
-
-📌 Current Status
-
-The application currently supports:
-
-Machine Learning-based customer churn prediction
-FastAPI REST APIs
-Pydantic request validation
-MySQL prediction storage
-Frontend customer input
-Churn probability visualization
-Prediction result display
-Prediction history
+- [x] Machine Learning based churn prediction
+- [x] FastAPI REST APIs
+- [x] MySQL prediction storage
+- [x] Frontend customer input
+- [x] Churn probability visualization
+- [x] Prediction history
 
 The application is currently configured for local execution.
 
-👩‍💻 Author
+## Future enhancements
 
-Monika
-B.Tech – Computer Science and Engineering (AI & ML)
+- [ ] Deploy the application for public access
+- [ ] Add authentication and authorization
+- [ ] Add customer-level analytics
+- [ ] Add interactive business dashboards
+- [ ] Add model monitoring
+- [ ] Add automated retraining
+- [ ] Improve frontend filtering and search
+- [ ] Add cloud deployment
+
+---
+
+## Author
+
+**Monika**
+B.Tech in Computer Science and Engineering (AI & ML)
