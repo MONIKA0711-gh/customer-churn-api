@@ -6,6 +6,7 @@ from app.database import Base
 class Prediction(Base):
 
     __tablename__ = "predictions"
+    from sqlalchemy import ForeignKey
 
     id = Column(
         Integer,
@@ -15,6 +16,13 @@ class Prediction(Base):
 
     gender = Column(
         String(20)
+    )
+
+    user_id = Column(
+    Integer,
+    ForeignKey("users.id"),
+    nullable=True,
+    index=True
     )
 
     tenure = Column(

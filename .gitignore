@@ -1,35 +1,12 @@
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
 # Environment variables and secrets
 .env
 .env.*
 
-# VS Code
-.vscode/
+# Keep an example configuration file if you create one
+!.env.example
 
-# PyCharm
-.idea/
-
-# Operating system files
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Python build files
-build/
-dist/
-*.egg-info/
+# Python
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/

@@ -1,5 +1,10 @@
+
 import os
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "mysql+pymysql://root:YOUR_LOCAL_PASSWORD@localhost:3306/customer_churn_db"
-)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is missing from .env")
